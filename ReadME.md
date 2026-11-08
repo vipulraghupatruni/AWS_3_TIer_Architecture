@@ -9,8 +9,8 @@ Github URL
 3.Database Configuration              - launch and configure an RDS instance to serve as the backend database
 4.Application Tier Setup              - deploy aaplication-tier resources, including the configurationsof an internal load balancer for traffic distribution within the tier
 5.Web Tier Setup                      - provision web-tier resources and setup an external load balancer to manage incoming traffic from users.
-6.SSL certification and               - generate an SSL certificate and apply it to the exter
-Domain Mapping (optional)
+6.SSL certification and               - generate an SSL certificate and apply it to the external load balancer to ensure secure communication.
+Domain Mapping (optional)               map the domain name to the external load balancer for public accessibility.
 
 
 
@@ -111,6 +111,48 @@ proxy_pass http://[REPLACE-WITH-INTERNAL-LB-DNS]:80/;
 
 ____5.Web_Tier_Setup_______ 
 
+# Step 5
+# Creation of Web tier resources including External Load Balancer
+
+sudo -su ec2-user #(To work as an ec2-user)
+
+cd /home/ec2-user
+
+ curl -o- https://raw.githubusercontent.com/avizway1/aws_3tier_architecture/main/install.sh | bash
+source ~/.bashrc
+nvm install 16
+nvm use 16
+
+aws s3 cp s3://<S3 Bucket Name>/application-code/web-tier/ web-tier --recursive
+ex: sudo aws s3 cp s3://demo-3tier-projett/application-code/web-tier/ web-tier --recursive
+
+ls ----> You will see 'web-tier'
+
+cd web-tier
+sudo dnf install libatomic -y
+npm install
+npm run build
+
+sudo dnf install nginx -y
+
+# Update Nginx configuration:
+cd /etc/nginx #(You are in nginx path)
+# ls ----> You will see 'nginx.conf' file
+
+sudo rm nginx.conf
+sudo aws s3 cp s3://<S3 Bucket Name>/application-code/nginx.conf .
+ex: sudo aws s3 cp s3://demo-3tier-projett/application-code/nginx.conf .
+
+sudo service nginx restart
+
+chmod -R 755 /home/ec2-user
+
+sudo chkconfig nginx on
+
+To check the output of the App, we can check using the Web-Tier-Instance public IP. But before checking lets open port no 80 with http, Anywhere IPv4, 0.0.0.0/0 ---> Save rules ----> Now paste the public ip of Web-Tier-Instance in new tab of browser ----> You will see the app ----> Enter the data in the app
+
+This is about 3 tier architecture with HA and Fault Tolerance.
+delete everything once its done
 
 
                
