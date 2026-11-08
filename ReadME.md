@@ -4,12 +4,13 @@ Github URL
 
 **Steps_for_Setting_up_the_Project_Infrastructure**
 -----------------------------------------------------
-1.VPC Creation
-2.S3 Bucket and IAM Role Setup
-3.Database Configuration
-4.Application Tier Setup
-5.Web Tier Setup
-6.SSL certification and Domain Mapping (optional)
+1.VPC Creation                        - Design and create a VPC to serve as the foundation for the project infrastructure.
+2.S3 Bucket and IAM Role Setup        - create an S3 bucket and upload the app code / setup an IAM role with the neccessary permissions and attach it to the EC2 instance.
+3.Database Configuration              - launch and configure an RDS instance to serve as the backend database
+4.Application Tier Setup              - deploy aaplication-tier resources, including the configurationsof an internal load balancer for traffic distribution within the tier
+5.Web Tier Setup                      - provision web-tier resources and setup an external load balancer to manage incoming traffic from users.
+6.SSL certification and               - generate an SSL certificate and apply it to the exter
+Domain Mapping (optional)
 
 
 
@@ -99,10 +100,16 @@ It should return: This is the health check.
 
 With this we have completed the application configuration.
 4.2. Creation of Internal Load Balancer for App Tier
+goto EC2 dashboard ---> then left panel side Load Balancers(Target Groups) --->after creating TG then create LB(load Balancing ---> copy DNS after creating LB
+---> open 3tier folder ---> select nginx.conf --> open in vscode ---> chang with this ex: internal-App-Internal-LB-72968644.us-east-2.elb.amazonaws.com
+
 Goto the downloaded code folder in local system ----> Open nginx.conf file and in the end of the file you will see something like below;
 #proxy for internal lb
 location /api/{
 proxy_pass http://[REPLACE-WITH-INTERNAL-LB-DNS]:80/;
+
+
+____5.Web_Tier_Setup_______ 
 
 
 
